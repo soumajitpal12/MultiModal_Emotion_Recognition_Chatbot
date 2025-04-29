@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multi-Modal-Login</title>
+  <link rel="stylesheet" href="/static/login_style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="login-box">
+    <div class="avatar">
+      <img src="static\images\user-icon.png" alt="User Icon">
+    </div>
+    <form method="POST">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+      <div class="options">
+        <label><input type="checkbox"> Remember me</label>
+        <a href="#">Forgot your password?</a>
+      </div>
+      <p class="register-link">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+    </form>
+  </div>
+</body>
+</html>

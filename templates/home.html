@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multi-Modal Emotion Detection</title>
+  <link rel="stylesheet" href="/static/style2.css"/>
+</head>
+
+<body>
+  <!--
+    @Author: Soumajit Pal
+    @Date: 16-03-2025
+    Modified: 28-04-2025
+  -->
+
+  <!-- Header -->
+  <div class="header">
+    <span class="logo">MULTI-MODAL EMOTION RECOGNITION SYSTEM</span>
+    <div class="nav-links">
+      <a href="#home" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact Us</a>
+      {% if session['user'] %}
+  <div class="user-info">
+      <button id="userButton">👋 Hello, <strong>{{ session['user'] }}</strong></button>
+      <div id="logoutOption">
+          <a href="{{ url_for('logout') }}">🚪 Logout</a>
+      </div>
+  </div>
+  {% else %}
+  <div class="user-info">
+      <a href="{{ url_for('login') }}">Login</a> |
+      <a href="{{ url_for('register') }}">Register</a>
+  </div>
+  {% endif %}
+    </div>
+  </div>
+
+  <!-- Greet the user and show logout -->
+  
+
+  <div id="background"></div>
+
+  <!-- Home Section -->
+  <section id="home">
+    <div class="container">
+      <div id="card-container">
+        <div class="card">
+          <img src="{{ url_for('static', filename='images/face-recognition.png') }}" alt="Face Recognition" width="100px" height="100px"><br>
+          Facial Emotion Detection
+          <br>
+          <button onclick="location.href='{{ url_for('facial_emotion', option=1) }}'">Scan Face</button>
+        </div>
+        <div class="card">
+          <img src="{{ url_for('static', filename='images/audio-file.png') }}" alt="Voice Detection" width="100px" height="100px"><br>
+          Chatbot with Voice Emotion Detection
+          <br>
+          <button onclick="location.href='{{ url_for('chatbot', option=2) }}'">Open</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <h1 class="section-title" style="text-align: center;">About Us</h1>
+    <div class="about-content" style="max-width: 900px; margin: auto; text-align: center; font-size: 1.1em;">
+      <p>Welcome to <strong>Multi-Modal Emotion Detection</strong>, where we pioneer advanced technology to recognize human emotions through multiple input channels. Our system combines facial expressions, voice analysis, and text sentiment to provide comprehensive emotional insights.</p>
+      <p>Founded in 2023, our team of experts in machine learning, psychology, and human-computer interaction has developed a groundbreaking approach to emotion recognition that achieves higher accuracy by analyzing multiple modalities simultaneously.</p>
+      <p>Our mission is to enhance human-computer interaction by enabling machines to better understand human emotional states, leading to more empathetic and responsive AI systems.</p>
+  
+      <h2 style="margin-top: 40px; color: #00ffcc;">Our Team</h2>
+      <div class="team-members" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px;">
+        <div class="team-member" style="text-align: center;">
+          <img src="{{ url_for('static', filename='images/member1.png') }}" alt="Pijush Kar" style="width: 150px; height: 150px; border-radius: 50%; border: 2px solid #00ffcc;">
+          <h3>Pijush Kar</h3>
+        </div>
+        <div class="team-member" style="text-align: center;">
+          <img src="{{ url_for('static', filename='images/member2.png') }}" alt="Raktim Karan" style="width: 150px; height: 150px; border-radius: 50%; border: 2px solid #00ffcc;">
+          <h3>Raktim Karan</h3>
+        </div>
+        <div class="team-member" style="text-align: center;">
+          <img src="{{ url_for('static', filename='images/member3.png') }}" alt="Avradip Singha" style="width: 150px; height: 150px; border-radius: 50%; border: 2px solid #00ffcc;">
+          <h3>Avradip Singha</h3>
+        </div>
+        <div class="team-member" style="text-align: center;">
+          <img src="{{ url_for('static', filename='images/member4.png') }}" alt="Soumajit Pal" style="width: 150px; height: 150px; border-radius: 50%; border: 2px solid #00ffcc;">
+          <h3>Soumajit Pal</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- Services Section -->
+  <section id="services">
+    <h1 class="section-title">Our Services</h1>
+    <div class="container">
+      <div class="service-cards">
+        <div class="card">
+          <img src="{{ url_for('static', filename='images/service1.png') }}" alt="Research">
+          <h3>Research Collaboration</h3>
+          <p>Partner with academic institutions to advance emotion recognition technology.</p>
+          <button>Learn More</button>
+        </div>
+        <div class="card">
+          <img src="{{ url_for('static', filename='images/service2.png') }}" alt="Custom Solutions">
+          <h3>Custom Solutions</h3>
+          <p>Tailored emotion detection systems for specific industry applications.</p>
+          <button>Get Quote</button>
+        </div>
+        <div class="card">
+          <img src="{{ url_for('static', filename='images/service3.png') }}" alt="API Access">
+          <h3>API Access</h3>
+          <p>Integrate our emotion detection capabilities into your applications.</p>
+          <button>Documentation</button>
+        </div>
+        <div class="card">
+          <img src="{{ url_for('static', filename='images/service4.png') }}" alt="Training">
+          <h3>Training & Workshops</h3>
+          <p>Learn how to implement and interpret emotion detection in your projects.</p>
+          <button>Schedule</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h1 class="section-title">Contact Us</h1>
+    <div class="contact-content">
+      <form class="contact-form" method="POST" action="{{ url_for('contact') }}">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Your email" required>
+        </div>
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" placeholder="Subject" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Your message" required></textarea>
+        </div>
+        <button type="submit">Send Message</button>
+      </form>
+
+      <div class="contact-info">
+        <div class="contact-item">
+          <i>📍</i>
+          <h3>Address</h3>
+          <p>Midnapore, West Bengal, India, 721101</p>
+        </div>
+        <div class="contact-item">
+          <i>📧</i>
+          <h3>Email</h3>
+          
+          <p> soumajit.bca@gmail.com </p>
+        </div>
+        <div class="contact-item">
+          <i>📞</i>
+          <h3>Phone</h3>
+          <p>+91 9093026498</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Multi-Modal Emotion Detection. All rights reserved.</p>
+  </footer>
+  
+
+  <!-- Vanta.js Background -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <script src="{{ url_for('static', filename='javascript/vanta-customization.js') }}"></script>
+
+  <!-- JavaScript for toggling logout option -->
+  <script>
+    document.getElementById("userButton").addEventListener("click", function () {
+        const logoutOption = document.getElementById("logoutOption");
+        if (logoutOption.style.display === "none" || logoutOption.style.display === "") {
+            logoutOption.style.display = "block"; // Show the logout option
+        } else {
+            logoutOption.style.display = "none"; // Hide the logout option
+        }
+    });
+</script>
+</body>
+</html>

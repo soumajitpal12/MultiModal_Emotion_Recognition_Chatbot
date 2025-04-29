@@ -1,0 +1,19 @@
+# Ignore environment files
+.env
+venv/
+myenv/
+tensorflow_env/
+instance/
+__pycache__/
+.cache/
+.vscode/
+.ipynb_checkpoints/
+uploads/
+*.pyc
+*.pyo
+*.pyd
+debug.jpg
+final.mp3
+gtts_output.mp3
+response.mp3
+skin_rash.jpg

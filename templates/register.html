@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <link rel="stylesheet" href="/static/register_style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="register-wrapper">
+    <form method="POST" class="register-form">
+      <h2>Registration Form</h2>
+
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="email" name="email" placeholder="Email address" required>
+      <input type="text" name="country" placeholder="Country" required>
+      <input type="tel" name="phone" placeholder="Phone" required>
+      <input type="password" name="password" placeholder="Password" required>
+
+      <div class="terms">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">I agree to the Terms and Conditions</label>
+      </div>
+
+      <button type="submit">Create Account</button>
+      
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+      <p class="login-link">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+    </form>
+  </div>
+</body>
+</html>

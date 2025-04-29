@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emotion Chatbot</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+  
+  <div class="chat-container">
+    <h2>Multi-Modal Emotion Recognition Chatbot</h2>
+    <div id="chat-box" class="chat-box"></div>
+
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Type a message..." />
+      <button onclick="sendMessage()">📩</button>
+      <button onclick="startVoiceInput()">🎤</button>
+    </div>
+
+    <div class="input-area">
+      <input type="file" id="image-input" accept="image/*" style="display: none;" />
+      <button onclick="document.getElementById('image-input').click()">🖼️ Mood from Image</button>
+      <button onclick="captureFromWebcam()">📷 Use Webcam</button>
+    </div>
+
+    <div class="webcam-area" id="webcam-area">
+      <video id="webcam-video" autoplay playsinline></video>
+      <button onclick="captureSnapshot()">📸 Snapshot</button>
+    </div>
+  </div>
+
+  <button onclick="location.href='/'" style="margin-top: 10px;">🏠 Back to Home</button>
+  
+
+
+  <script>
+    let voiceMode = false;
+    let lastBotResponse = "";
+
+    document.getElementById('image-input').addEventListener('change', uploadImage);
+
+    function getCurrentTime() {
+      const now = new Date();
+      return now.getHours().toString().padStart(2, '0') + ":" +
+             now.getMinutes().toString().padStart(2, '0');
+    }
+
+    async function sendMessage() {
+      const inputField = document.getElementById("user-input");
+      const userText = inputField.value.trim();
+      if (!userText) return;
+
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<div class="message user">
+        <div class="bubble">${userText}<span class="timestamp">${getCurrentTime()}</span></div>
+      </div>`;
+      inputField.value = "";
+
+      const typingIndicator = document.createElement("div");
+      typingIndicator.classList.add("message", "bot");
+      typingIndicator.innerHTML = `<div class="bubble typing">Typing...</div>`;
+      chatBox.appendChild(typingIndicator);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText })
+      });
+
+      const data = await response.json();
+      typingIndicator.remove();
+
+      let botHtml = `<div class="message bot">
+        <div class="bubble">${data.response}<span class="timestamp">${getCurrentTime()}</span></div>
+      </div>`;
+      chatBox.innerHTML += botHtml;
+
+      if (voiceMode) {
+        lastBotResponse = data.response;
+        const playBtn = document.createElement("button");
+        playBtn.textContent = "🔊 Play";
+        playBtn.classList.add("play-button");
+        playBtn.onclick = () => speakText(lastBotResponse);
+        chatBox.appendChild(playBtn);
+        voiceMode = false;
+      }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function speakText(text) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = "en-US";
+      window.speechSynthesis.speak(speech);
+    }
+
+    function startVoiceInput() {
+      if (!("webkitSpeechRecognition" in window)) {
+        alert("Voice recognition not supported.");
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("user-input").value = transcript;
+        voiceMode = true;
+        sendMessage();
+      };
+
+      recognition.onerror = function(event) {
+        alert("Voice recognition failed: " + event.error);
+      };
+    }
+
+    async function uploadImage() {
+      const imageInput = document.getElementById("image-input");
+      if (!imageInput.files.length) return;
+
+      const formData = new FormData();
+      formData.append("image", imageInput.files[0]);
+
+      const imageURL = URL.createObjectURL(imageInput.files[0]);
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<div class="message user">
+        <img src="${imageURL}" class="chat-image"/>
+        <span class="timestamp">${getCurrentTime()}</span>
+      </div>`;
+
+      const response = await fetch("/detect_emotion", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      chatBox.innerHTML += `<div class="message bot">
+        <div class="bubble">${data.response}<span class="timestamp">${getCurrentTime()}</span></div>
+      </div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    let videoStream;
+
+    async function captureFromWebcam() {
+      const video = document.getElementById("webcam-video");
+      const webcamArea = document.getElementById("webcam-area");
+
+      try {
+        videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = videoStream;
+        webcamArea.style.display = "flex";
+      } catch (error) {
+        alert("Webcam access denied.");
+        console.error(error);
+      }
+    }
+
+    async function captureSnapshot() {
+      const video = document.getElementById("webcam-video");
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const context = canvas.getContext("2d");
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
+
+      videoStream.getTracks().forEach(track => track.stop());
+      document.getElementById("webcam-area").style.display = "none";
+
+      const imageURL = URL.createObjectURL(blob);
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<div class="message user">
+        <img src="${imageURL}" class="chat-image"/>
+        <span class="timestamp">${getCurrentTime()}</span>
+      </div>`;
+
+      const formData = new FormData();
+      formData.append("image", blob, "webcam.jpg");
+
+      const response = await fetch("/detect_emotion", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      chatBox.innerHTML += `<div class="message bot">
+        <div class="bubble">${data.response}<span class="timestamp">${getCurrentTime()}</span></div>
+      </div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #fff;
+  overflow-x: hidden;
+  background-color: #000;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.7);
+  /* background-image: url("../images/header-bg.jpg"); */
+  backdrop-filter: blur(10px);
+ 
+  background-size: auto;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 15px;
+
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #00ffcc;
+}
+
+#background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+section {
+  min-height: 100vh;
+  padding: 100px 50px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-title {
+  background-color: #686363;
+  padding: 5px;
+  width: 100%;
+  text-align: center;
+  border-radius: 5px;
+  font-size: 36px;
+  margin-bottom: 30px;
+  color: #00ffcc;
+  box-shadow: #686363 0px 0px 10px;
+
+
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#card-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1px;
+  margin-top: 30px;
+}
+
+.card {
+  background-color: rgb(0, 0, 0);
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  width: 300px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 255, 204, 0.2);
+}
+
+.card img {
+  margin-bottom: 15px;
+}
+
+button {
+  background-color: #00ffcc;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #fff;
+  transform: scale(1.05);
+}
+
+.service-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.about-content, .contact-content {
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+.team-members {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.team-member {
+  width: 200px;
+  text-align: center;
+}
+
+.team-member img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+  border: 3px solid #00ffcc;
+}
+
+.contact-form {
+  width: 100%;
+  max-width: 600px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.form-group textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.contact-info {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.contact-item {
+  text-align: center;
+  margin: 0 20px;
+}
+
+.contact-item i {
+  font-size: 24px;
+  color: #00ffcc;
+  margin-bottom: 10px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.user-info {
+    position: absolute;
+    top: 15px;
+    margin-top: 60px;
+    align-items: center;
+    right: 20px;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 5px 10px;
+    border-radius: 30px;
+    color: #ffffff;
+    z-index: 9999;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.user-info a {
+  
+    color: #00ffff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 10px;
+
+
+}
+
+.user-info a:hover {
+    text-decoration: underline;
+}
+
+/* User button styling */
+#userButton {
+  background-color: #00ffff;
+  color: #000;
+  border: none;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 16px;
+  
+    margin-top: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#userButton:hover {
+  background-color: #00b3b3;
+  color: #fff;
+}
+
+/* Logout option styling */
+#logoutOption {
+  display: none; /* Initially hidden */
+  margin-top: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#logoutOption a {
+  color: #fff;
+  text-decoration: none;
+}
+
+#logoutOption:hover {
+  background-color: rgba(255, 0, 0, 0.8);
+}

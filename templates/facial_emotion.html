@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real-Time Facial Emotion Detection</title>
+  <style>
+    body {
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    img {
+      border: 6px solid cyan;
+      border-radius: 50px;
+      box-shadow: 0 0 30px cyan;
+    }
+  </style>
+</head>
+<body>
+  <img src="{{ url_for('video_feed') }}" width="720" height="560">
+  <button onclick="location.href='/'" style="margin-top: 10px;">🏠 Back to Home</button>
+
+</body>
+</html>

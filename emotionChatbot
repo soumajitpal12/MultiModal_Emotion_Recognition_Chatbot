@@ -1,0 +1,104 @@
+import os
+import gradio as gr
+import speech_recognition as sr
+from gtts import gTTS
+from dotenv import load_dotenv
+from groq import Groq
+import subprocess
+import platform
+
+# Load environment variables
+load_dotenv()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+# Initialize Groq client
+client = Groq(api_key=GROQ_API_KEY)
+
+# Store chat history
+chat_history = []
+
+# Transcribe speech to text
+def transcribe_audio(audio_filepath):
+    recognizer = sr.Recognizer()
+    try:
+        with sr.AudioFile(audio_filepath) as source:
+            audio = recognizer.record(source)
+            text = recognizer.recognize_google(audio)
+            return text
+    except Exception as e:
+        return f"Error in transcription: {e}"
+
+# Detect emotion with advice
+def detect_emotion_conversationally(history):
+    messages = [{"role": "system", "content": "You are a friendly mental health assistant. Have a conversation with the user, understand their situation through back-and-forth dialogue, and provide short, solution-oriented replies. Use the user's past messages to give relevant answers."}]
+    for human, bot in history:
+        messages.append({"role": "user", "content": human})
+        messages.append({"role": "assistant", "content": bot})
+
+    chat_completion = client.chat.completions.create(
+        messages=messages,
+        model="llama-3.3-70b-versatile"
+    )
+    return chat_completion.choices[0].message.content
+
+# Text-to-speech conversion
+def text_to_speech(text, output_filepath="response.mp3"):
+    try:
+        tts = gTTS(text=text, lang="en", slow=False)
+        tts.save(output_filepath)
+        os_name = platform.system()
+        if os_name == "Darwin":
+            subprocess.run(["afplay", output_filepath])
+        elif os_name == "Windows":
+            subprocess.run(["powershell", "-c", f'(New-Object Media.SoundPlayer "{output_filepath}").PlaySync();'])
+        elif os_name == "Linux":
+            subprocess.run(["aplay", output_filepath])
+        return output_filepath
+    except Exception as e:
+        return f"Error in text-to-speech: {e}"
+
+# Main chatbot function
+def chatbot(audio_filepath, text_input, history):
+    user_msg = ""
+    if audio_filepath:
+        user_msg = transcribe_audio(audio_filepath)
+    elif text_input:
+        user_msg = text_input
+
+    if not user_msg:
+        return history, None
+
+    response = detect_emotion_conversationally(history + [(user_msg, "")])
+    history.append((user_msg, response))
+    audio_output = text_to_speech(response)
+
+    return history, audio_output
+
+# Gradio UI with chat layout
+with gr.Blocks(css="""
+    .message-bubble { padding: 10px; border-radius: 15px; margin: 5px; max-width: 75%; display: inline-block; }
+    .message-bubble.user { background-color: #dcf8c6; align-self: flex-end; }
+    .message-bubble.bot { background-color: #ececec; align-self: flex-start; }
+    .chatbox { display: flex; flex-direction: column; }
+    .input-section { display: flex; gap: 10px; align-items: center; }
+    .audio-section { display: flex; align-items: center; gap: 10px; }
+""") as demo:
+    gr.Markdown("""## 🟢 Emotion Support Chatbot
+Talk or type like you're messaging a friend. I'll listen, understand, and support you.❤️""")
+
+    chatbot_ui = gr.Chatbot(label="WhatsApp-style Chat", show_copy_button=True)
+    audio_input = gr.Audio(sources=["microphone"], type="filepath", label="🎙️ Speak")
+    text_input = gr.Textbox(placeholder="Type your message...", label="💬 Text")
+    voice_response = gr.Audio(label="🔊 Voice Response")
+    clear_btn = gr.Button("🧹 Clear Chat")
+    state = gr.State([])
+
+    def clear_chat():
+        return [], None
+
+    submit_btn = gr.Button("Send", variant="primary")
+    submit_btn.click(chatbot, inputs=[audio_input, text_input, state], outputs=[chatbot_ui, voice_response])
+    clear_btn.click(clear_chat, outputs=[chatbot_ui, voice_response, state])
+
+# Launch the app
+demo.launch(debug=True)

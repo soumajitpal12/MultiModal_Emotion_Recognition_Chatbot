@@ -1,0 +1,197 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ece5dd;
+  margin: 0;
+  padding: 0;
+  background-image: url('/static/images/background.png'); /* Use forward slashes */
+  background-size: cover; /* Ensures the image covers the entire background */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  background-position: center; /* Centers the image */
+  height: 100vh; /* Ensures the body takes the full viewport height */
+}
+
+.chat-container {
+  max-width: 600px;
+  margin: 40px 20px; /* Adjust margin for spacing */
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  padding: 15px;
+  backdrop-filter: blur(10px); /* Adds a blur effect for better visibility */
+  position: absolute; /* Position the container */
+  right: 20px; /* Align it to the right side */
+  top: 6px; /* Add some spacing from the top */
+}
+
+h2{
+  font-size: 30px;
+  color: #212221;
+  text-align: center;
+  margin-bottom: 5px;
+
+}
+
+.chat-box {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 400px;
+  scroll-behavior: smooth;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+}
+
+.input-area {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background-color: #f0f0f0;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.input-area input[type="text"],
+.input-area input[type="file"],
+.input-area textarea {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.input-area textarea {
+  resize: none;
+  overflow: hidden;
+  height: 40px;
+  max-height: 120px;
+}
+
+.input-area button {
+  padding: 10px 20px;
+  background-color: #25D366;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  vertical-align: middle;
+}
+
+.input-area button:hover {
+  background-color: #1ebe5b;
+}
+
+/* Mic button specific style */
+.input-area button:nth-child(3) {
+  background-color: #128C7E;
+}
+
+.input-area button:nth-child(3):hover {
+  background-color: #0e6b61;
+}
+
+.message {
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  max-width: 80%;
+  position: relative;
+}
+
+.user {
+  background-color: #DCF8C6;
+  align-self: flex-end;
+}
+
+.bot {
+  background-color: #E6E6E6;
+  align-self: flex-start;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.chat-image {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 12px;
+  margin-top: 5px;
+  object-fit: cover;
+}
+
+video {
+  width: 50%;
+  height: auto;
+  border-radius: 50px;
+  display: block;
+  margin-top: 5px;
+}
+
+.webcam-area {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.webcam-area button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #25D366;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.webcam-area button:hover {
+  background-color: #1ebe5b;
+}
+
+/* Typing Indicator */
+.typing {
+  font-style: italic;
+  opacity: 0.7;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Play Button style inside chat */
+.play-button {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  color: #25D366;
+  border: 2px solid #25D366;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.3s ease;
+}
+
+.play-button:hover {
+  background-color: #25D366;
+  color: white;
+}

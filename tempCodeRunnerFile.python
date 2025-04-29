@@ -1,0 +1,32 @@
+from flask import Flask
+from flask_mail import Mail, Message
+import os
+
+app = Flask(__name__)
+
+# Flask-Mail configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Or replace with your email directly
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Or replace with your app password directly
+app.config['MAIL_DEFAULT_SENDER'] = 'soumajit.bca@gmail.com'  # Default sender
+
+mail = Mail(app)
+
+@app.route('/send-mail/')
+def send_mail():
+    # Explicitly define the sender in the Message object
+    msg = Message('Test Email from Localhost',
+                  recipients=['recipient@example.com'],
+                  sender='soumajit.bca@gmail.com')  # Explicitly set sender here
+    msg.body = 'This is a test email sent from Flask app running on localhost!'
+    try:
+        mail.send(msg)
+        return "Email sent successfully!"
+    except Exception as e:
+        return f"Error sending email: {str(e)}"
+
+if __name__ == '__main__':
+    app.run(debug=True)
