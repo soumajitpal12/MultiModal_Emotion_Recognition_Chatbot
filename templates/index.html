@@ -3,40 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Emotion Chatbot</title>
+  <title>EmotiverseAI | Chatbot</title>
   <link rel="stylesheet" href="/static/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+
+  <!-- Header (outside chat container) -->
+  <header class="header">
+    <div class="logo-section">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+      <span class="logo">EmotiverseAI</span>
+    </div>
+    <button onclick="location.href='/home'" class="back-button">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+  </header>
+
+  <div id="background"></div>
   
+
+  <!-- Chat Container -->
   <div class="chat-container">
     <h2>Multi-Modal Emotion Recognition Chatbot</h2>
-    <div id="chat-box" class="chat-box"></div>
 
+    <div id="chat-box" class="chat-box">
+      <div class="message-bot">
+        <div class="bubble">Hello! How can I assist you today?</div>
+      </div>
+    </div>
+
+    <!-- Input area -->
     <div class="input-area">
       <input type="text" id="user-input" placeholder="Type a message..." />
-      <button onclick="sendMessage()">📩</button>
-      <button onclick="startVoiceInput()">🎤</button>
+      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+      <button onclick="startVoiceInput()"><i class="fas fa-microphone"></i></button>
     </div>
+    <div id="mic-status" class="mic-status" style="display: none;">Listening... Speak now.</div>
 
+    <!-- Image and webcam buttons -->
     <div class="input-area">
       <input type="file" id="image-input" accept="image/*" style="display: none;" />
-      <button onclick="document.getElementById('image-input').click()">🖼️ Mood from Image</button>
-      <button onclick="captureFromWebcam()">📷 Use Webcam</button>
+      <button onclick="document.getElementById('image-input').click()">
+        <i class="fas fa-image"></i> Mood from Image
+      </button>
+      <button onclick="captureFromWebcam()">
+        <i class="fas fa-camera"></i> Use Webcam
+      </button>
     </div>
 
+    <!-- Webcam area -->
     <div class="webcam-area" id="webcam-area">
       <video id="webcam-video" autoplay playsinline></video>
-      <button onclick="captureSnapshot()">📸 Snapshot</button>
+      <button onclick="captureSnapshot()"><i class="fas fa-camera-retro"></i> Snapshot</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Powered by EmotiverseAI</p>
+      <p>© 2025 EmotiverseAI. All rights reserved.</p>
     </div>
   </div>
 
-  <button onclick="location.href='/'" style="margin-top: 10px;">🏠 Back to Home</button>
-  
-
-
+  <!-- JavaScript -->
   <script>
     let voiceMode = false;
     let lastBotResponse = "";
+    let videoStream;
 
     document.getElementById('image-input').addEventListener('change', uploadImage);
 
@@ -80,7 +113,7 @@
       if (voiceMode) {
         lastBotResponse = data.response;
         const playBtn = document.createElement("button");
-        playBtn.textContent = "🔊 Play";
+        playBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play';
         playBtn.classList.add("play-button");
         playBtn.onclick = () => speakText(lastBotResponse);
         chatBox.appendChild(playBtn);
@@ -97,6 +130,8 @@
     }
 
     function startVoiceInput() {
+      const micStatus = document.getElementById("mic-status");
+
       if (!("webkitSpeechRecognition" in window)) {
         alert("Voice recognition not supported.");
         return;
@@ -108,16 +143,23 @@
       recognition.maxAlternatives = 1;
 
       recognition.start();
+      micStatus.style.display = "block"; // Show "listening" message
 
       recognition.onresult = function(event) {
         const transcript = event.results[0][0].transcript;
         document.getElementById("user-input").value = transcript;
         voiceMode = true;
+        micStatus.style.display = "none"; // Hide message
         sendMessage();
       };
 
       recognition.onerror = function(event) {
+        micStatus.style.display = "none";
         alert("Voice recognition failed: " + event.error);
+      };
+
+      recognition.onend = function () {
+        micStatus.style.display = "none"; // hide when finished
       };
     }
 
@@ -146,8 +188,6 @@
       </div>`;
       chatBox.scrollTop = chatBox.scrollHeight;
     }
-
-    let videoStream;
 
     async function captureFromWebcam() {
       const video = document.getElementById("webcam-video");
@@ -196,6 +236,18 @@
       </div>`;
       chatBox.scrollTop = chatBox.scrollHeight;
     }
+
+    document.getElementById("user-input").addEventListener("keydown", function(event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
   </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <script src="{{ url_for('static', filename='javascript/vanta-customization.js') }}"></script>
+
 </body>
 </html>

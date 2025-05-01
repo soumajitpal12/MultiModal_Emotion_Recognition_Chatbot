@@ -35,7 +35,14 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Your email password
 app.config['MAIL_DEFAULT_SENDER'] = 'soumajit.bca@gmail.com'  # Default sender email
 
 
-mail = Mail(app)        
+mail = Mail(app)      
+
+
+# ---------- Landing Route ----------  
+@app.route('/')
+def landing():
+    return render_template('landing.html')
+
 # ---------- Auth Routes ----------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -78,10 +85,10 @@ def register():
 @app.route('/logout')
 def logout():
     session.pop('user', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('landing'))
 
 # ---------- Main Page Routes ----------
-@app.route('/')
+@app.route('/home')
 def home():
     if 'user' not in session:
         return redirect(url_for('login'))

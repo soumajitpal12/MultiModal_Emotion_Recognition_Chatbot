@@ -3,20 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Multi-Modal Emotion Detection</title>
+  <title>EmotiverseAI | Multi-Modal Emotion Recognition Chatbot</title>
   <link rel="stylesheet" href="/static/style2.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body>
   <!--
     @Author: Soumajit Pal
     @Date: 16-03-2025
-    Modified: 28-04-2025
+    Modified: 01-05-2025
   -->
 
   <!-- Header -->
   <div class="header">
-    <span class="logo">MULTI-MODAL EMOTION RECOGNITION SYSTEM</span>
+    <span class="logo1">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+  </span>
+    <span class="logo">EmotiverseAI</span>
+    
     <div class="nav-links">
       <a href="#home" class="active">Home</a>
       <a href="#about">About</a>
@@ -24,9 +30,9 @@
       <a href="#contact">Contact Us</a>
       {% if session['user'] %}
   <div class="user-info">
-      <button id="userButton">👋 Hello, <strong>{{ session['user'] }}</strong></button>
+      <button id="userButton"><i class="fa-solid fa-hand"></i> Hello, <strong>{{ session['user'] }}</strong></button>
       <div id="logoutOption">
-          <a href="{{ url_for('logout') }}">🚪 Logout</a>
+          <a href="{{ url_for('logout') }}"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
       </div>
   </div>
   {% else %}
@@ -51,13 +57,17 @@
           <img src="{{ url_for('static', filename='images/face-recognition.png') }}" alt="Face Recognition" width="100px" height="100px"><br>
           Facial Emotion Detection
           <br>
-          <button onclick="location.href='{{ url_for('facial_emotion', option=1) }}'">Scan Face</button>
+          <button onclick="location.href='{{ url_for('facial_emotion', option=1) }}'">
+            <i class="fa-solid fa-face-smile"></i> Scan Face
+          </button>
         </div>
         <div class="card">
           <img src="{{ url_for('static', filename='images/audio-file.png') }}" alt="Voice Detection" width="100px" height="100px"><br>
           Chatbot with Voice Emotion Detection
           <br>
-          <button onclick="location.href='{{ url_for('chatbot', option=2) }}'">Open</button>
+          <button onclick="location.href='{{ url_for('chatbot', option=2) }}'">
+            <i class="fa-solid fa-robot"></i> Open
+          </button>
         </div>
       </div>
     </div>
@@ -148,23 +158,24 @@
           <label for="message">Message</label>
           <textarea id="message" name="message" placeholder="Your message" required></textarea>
         </div>
-        <button type="submit">Send Message</button>
+        <button type="submit">
+          <i class="fa-solid fa-paper-plane"></i> Send Message
+        </button>
       </form>
 
       <div class="contact-info">
         <div class="contact-item">
-          <i>📍</i>
+          <i class="fa-solid fa-location-dot"></i>
           <h3>Address</h3>
           <p>Midnapore, West Bengal, India, 721101</p>
         </div>
         <div class="contact-item">
-          <i>📧</i>
+          <i class="fa-solid fa-envelope"></i>
           <h3>Email</h3>
-          
-          <p> soumajit.bca@gmail.com </p>
+          <p>soumajit.bca@gmail.com</p>
         </div>
         <div class="contact-item">
-          <i>📞</i>
+          <i class="fa-solid fa-phone"></i>
           <h3>Phone</h3>
           <p>+91 9093026498</p>
         </div>
@@ -173,7 +184,7 @@
   </section>
 
   <footer>
-    <p>&copy; 2025 Multi-Modal Emotion Detection. All rights reserved.</p>
+    <p>&copy; 2025 EmotiverseAI. All rights reserved.</p>
   </footer>
   
 

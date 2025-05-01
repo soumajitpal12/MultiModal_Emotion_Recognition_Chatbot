@@ -3,7 +3,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Open Sans', sans-serif;
-  background: linear-gradient(to bottom right, #fc466b, #3f5efb);
+  background:black;
+  
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -24,6 +25,13 @@ body {
   position: relative;
 }
 
+.login-box h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #e5dfdf;
+}
+
 /* Avatar icon */
 .avatar img {
   width: 80px;
@@ -38,7 +46,7 @@ body {
 /* Input fields */
 input[type="text"],
 input[type="password"] {
-  width: 100%;
+  width: 90%;
   padding: 12px 15px;
   margin-bottom: 20px;
   border: none;

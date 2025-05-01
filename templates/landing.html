@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EmotiverseAI | Home</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0">
+
+  <link rel="stylesheet" href="static\landing_style.css">
+
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+<div class="header">
+  <span class="logo1">
+    <img src="static\images\logo.png" alt="Logo" class="logo-img">
+  </span> 
+  <span class="logo">EmotiverseAI</span>
+
+  <div class="nav-links">
+    <a href="#home" class="active">Home</a>
+    <a href="#features">Features</a>
+    <a href="#about">About</a>
+    
+    <a href="#contact">Contact</a>
+
+    <a href="{{ url_for('login') }}">Sign in</a>
+    <!-- If you want to include login explicitly (and later activate), add here -->
+    <!-- <a href="{{ url_for('login') }}" class="active">Log in</a> -->
+  </div>
+</div>
+
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>MULTI-MODAL EMOTION RECOGNITION SYSTEM</h1>
+      <p>Detect emotions through voice, text, and facial expression with cutting-edge AI. Experience the future of
+        emotional intelligence today.</p>
+      <a href="{{ url_for('login') }}" class="button">Try it Now</a>
+    </div>
+    <div class="hero-image">
+      <img src="static\images\photo1.png" alt="Emotion Recognition Illustration">
+    </div>
+  </section>
+
+ <!-- Features Section -->
+  <section id="features" class="features">
+    <h2>Key Features</h2>
+    <p>
+      EmotiverseAI is packed with powerful features tailored to enhance emotional insight and user engagement across various
+      applications. Here’s what makes it stand out:
+    </p>
+    <ul>
+      <li><strong>Multimodal Emotion Detection:</strong> Combines facial expression recognition, vocal tone analysis,
+        and text sentiment mining for comprehensive emotion profiling.</li>
+      <li><strong>Real-Time Processing:</strong> Analyze live inputs instantly, providing immediate emotional feedback
+        in interactive environments.</li>
+      <li><strong>Customizable Integration:</strong> Easily integrate EmotiverseAI’s emotion engine with existing platforms
+        using flexible APIs.</li>
+      <li><strong>Language and Accent Flexibility:</strong> Supports multiple languages and understands diverse speech
+        patterns and expressions.</li>
+      <li><strong>Privacy-Focused Architecture:</strong> Built with user privacy in mind — all data is processed
+        securely with options for on-device computation.</li>
+    </ul>
+    <p>
+      From AI-powered tutors to mental wellness apps and virtual agents, EmotiverseAI helps create emotionally responsive
+      digital experiences that understand how users feel — not just what they say or do.
+    </p>
+  </section>
+
+
+    
+
+  <!-- About Section -->
+  <section id="about" class="about">
+    <h2>About EmotiverseAI</h2>
+    <p>
+      EmotiverseAI is an innovative multimodal emotion recognition platform designed to bridge the gap between humans and
+      machines by enabling emotionally intelligent interactions. In today’s digital world, understanding user emotions
+      can significantly improve user experience, customer service, and even mental health tracking.
+    </p>
+    <p>
+      Our system leverages state-of-the-art artificial intelligence and deep learning models to analyze voice
+      intonation, facial expressions, and written text. These data streams are processed in real time to detect
+      emotional states such as happiness, sadness, anger, fear, surprise, and neutrality with impressive accuracy.
+    </p>
+    <p>
+      Whether you're integrating EmotiverseAI into a customer support chatbot, a virtual classroom, or a healthcare
+      monitoring tool, the goal remains the same — to bring empathy into technology and make machines more human-aware.
+      At EmotiverseAI, we believe that emotional intelligence is just as vital as data intelligence in building a more
+      responsive and humane future.
+    </p>
+    <p>
+      Join us on this journey to revolutionize how we interact with technology. Together, we can create a world where
+      machines understand and respond to human emotions, enhancing our digital experiences and improving lives.
+  </section>
+
+ 
+  
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <h2>Contact Us</h2>
+    <p>
+      Have questions, feedback, or partnership ideas? We'd love to hear from you! Whether you're a developer, educator,
+      healthcare provider, or tech innovator, EmotiverseAI is here to help you embed emotional intelligence into your
+      solution.
+    </p>
+    <p>
+      Reach out to us for technical support, product demos, or collaboration opportunities. Together, we can build a
+      more emotionally aware digital world.
+    </p>
+    <a href="mailto:soumajit.bca@gmail.com" class="btn">Email Us</a>
+  </section>
+
+  <footer class="footer">
+    
+    <p>&copy; 2025 EmotiverseAI. All rights reserved.</p>
+    <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Support</a>
+        <a href="#">FAQ</a>
+    </div>
+</footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>
