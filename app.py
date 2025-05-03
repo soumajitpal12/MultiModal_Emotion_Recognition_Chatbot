@@ -12,7 +12,8 @@ mail = Mail(app)
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 
 # DB Setup
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+
 db = SQLAlchemy(app)
 
 # User Model
