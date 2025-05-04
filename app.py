@@ -1,22 +1,27 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, Response
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from chatbot import get_bot_response, detect_emotion_from_image
 from dotenv import load_dotenv
 import os
+import cv2
+import numpy as np
+from tensorflow.keras.models import model_from_json
+from waitress import serve
 
+# Load environment variables
 load_dotenv()
+
 app = Flask(__name__)
 mail = Mail(app)
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 
-# DB Setup
+# Database config
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
-
 db = SQLAlchemy(app)
 
-# User Model
+# User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -26,25 +31,29 @@ class User(db.Model):
 app.config["UPLOAD_FOLDER"] = "uploads"
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
+# Email config
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = 'soumajit.bca@gmail.com'
+mail = Mail(app)
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Gmail SMTP server
-app.config['MAIL_PORT'] = 587  # SMTP port for Gmail
-app.config['MAIL_USE_TLS'] = True  # Enable TLS for Gmail
-app.config['MAIL_USE_SSL'] = False  # Disable SSL for Gmail
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Your email address
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Your email password
-app.config['MAIL_DEFAULT_SENDER'] = 'soumajit.bca@gmail.com'  # Default sender email
+# Load emotion model ONCE at startup
+with open("emotiondetector.json", "r") as json_file:
+    model_json = json_file.read()
+emotion_model = model_from_json(model_json)
+emotion_model.load_weights("emotiondetector.h5")
+emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-
-mail = Mail(app)      
-
-
-# ---------- Landing Route ----------  
+# Routes
 @app.route('/')
 def landing():
     return render_template('landing.html')
 
-# ---------- Auth Routes ----------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -59,36 +68,22 @@ def login():
 def register():
     if request.method == 'POST':
         username = request.form['username']
-        #email = request.form['email']
-        #country = request.form['country']
-       # phone = request.form['phone']
         password = request.form['password']
-
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
-            return render_template('register.html', error="Username already exists. Please choose a different one.")
-
+            return render_template('register.html', error="Username already exists.")
         hashed_pw = generate_password_hash(password)
-        new_user = User(
-            username=username,
-            #email=email,
-            #country=country,
-            #phone=phone,
-            password=hashed_pw
-        )
+        new_user = User(username=username, password=hashed_pw)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
-
     return render_template('register.html')
-
 
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect(url_for('landing'))
 
-# ---------- Main Page Routes ----------
 @app.route('/home')
 def home():
     if 'user' not in session:
@@ -101,55 +96,39 @@ def chatbot():
         return redirect(url_for('login'))
     return render_template('index.html')
 
-
-
-
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        # Get the form data
         name = request.form.get('name')
         email = request.form.get('email')
         subject = request.form.get('subject')
         message = request.form.get('message')
-
-        # Create the email message
-        msg = Message(f"New Contact Form Submission: {subject}",
-                      recipients=["soumajit.bca@gmail.com"])  # Replace with your email address
+        msg = Message(f"New Contact Form Submission: {subject}", recipients=["soumajit.bca@gmail.com"])
         msg.body = f"""
         You have a new contact form submission:
-
         Name: {name}
         Email: {email}
         Subject: {subject}
         Message: {message}
         """
-
-        # Send the email
         try:
-            mail.send(msg)  # Send the email
+            mail.send(msg)
             print("Email sent successfully.")
         except Exception as e:
             print(f"Error sending email: {e}")
-
-        # After submission, redirect to a 'thank you' page
         return redirect(url_for('contact_thanks'))
-
     return render_template('home.html')
 
 @app.route('/contact-thanks')
 def contact_thanks():
     return render_template('contact_thanks.html')
 
-
-# ---------- Chat Route ----------
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json["message"]
     response = get_bot_response(user_input)
     return jsonify({"response": response})
 
-# ---------- Emotion Upload Detection ----------
 @app.route("/detect_emotion", methods=["POST"])
 def detect_emotion():
     if 'image' not in request.files:
@@ -164,20 +143,15 @@ def detect_emotion():
         response = get_bot_response(f"I'm feeling {emotion}")
         return jsonify({"response": f"You look {emotion}. {response}"})
 
-# ---------- Real-Time Camera Emotion ----------
-from waitress import serve
-import cv2
-import numpy as np
-from tensorflow.keras.models import model_from_json
-from flask import Response
+@app.route('/facial-emotion')
+def facial_emotion():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template('facial_emotion.html')
 
-with open("emotiondetector.json", "r") as json_file:
-    model_json = json_file.read()
-emotion_model = model_from_json(model_json)
-emotion_model.load_weights("emotiondetector.h5")
-
-emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def gen_frames():
     cap = cv2.VideoCapture(0)
@@ -204,21 +178,7 @@ def gen_frames():
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-@app.route('/facial-emotion')
-def facial_emotion():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-    return render_template('facial_emotion.html')
-
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    serve(app, host="0.0.0.0", port=8000,threads=8)
-    
-    
-    #  http://localhost:8000/
-
+    serve(app, host="0.0.0.0", port=8000, threads=8)
