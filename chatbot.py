@@ -38,6 +38,10 @@ model.load_weights("emotiondetect.h5")
 haar_file = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(haar_file)
 
+if face_cascade.empty():
+    print("ERROR: Haar Cascade failed to load!")
+
+
 labels = {0: 'angry', 1: 'disgust', 2: 'fear', 3: 'happy', 4: 'neutral', 5: 'sad', 6: 'surprise'}
 
 def extract_features(image):
@@ -46,21 +50,35 @@ def extract_features(image):
     return feature / 255.0
 
 def detect_emotion_from_image(image_path):
+    print(f"DEBUG: Trying to load image from {image_path}")
     gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    
     if gray is None:
+        print("DEBUG: Failed to load image.")
         return "No image loaded"
 
+    print("DEBUG: Image loaded successfully, detecting faces...")
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+    print(f"DEBUG: Number of faces detected = {len(faces)}")
 
     if len(faces) > 0:
         for (x, y, w, h) in faces:
             face_img = gray[y:y+h, x:x+w]
-            face_img = cv2.resize(face_img, (48, 48))
+            try:
+                face_img = cv2.resize(face_img, (48, 48))
+            except Exception as e:
+                print(f"DEBUG: Resize failed: {e}")
+                continue
             processed = extract_features(face_img)
             prediction = model.predict(processed)
             emotion = labels[prediction.argmax()]
+            print(f"DEBUG: Emotion detected = {emotion}")
             return emotion
+    else:
+        print("DEBUG: No faces found in image.")
     return "No face found"
+
 
 # ✅ Generate speech from text
 def generate_speech(text, folder):
